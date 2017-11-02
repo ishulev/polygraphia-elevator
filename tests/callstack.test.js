@@ -2,7 +2,39 @@ var test = require('tape');
 var callstack = require('../scripts/callstack.js');
 
 test('callstack should have queue function', function (t) {
-    t.is(typeof callstack.queue, 'function', 'callstack has a function, called queue');
+    t.is(typeof callstack.queue, 'function');
+    t.end();
+});
+
+test('callstack should have get function', function (t) {
+    t.is(typeof callstack.get, 'function');
+    t.end();
+});
+
+test('callstack should have pop function', function (t) {
+    t.is(typeof callstack.pop, 'function');
+    t.end();
+});
+
+test('get should return an array', function (t) {
+    t.looseEqual(callstack.get(), [], 'get returns an array');
+    t.end();
+});
+
+test('get should return an array with an item, inserted from queue', function (t) {
+    var floor = 2;
+    callstack.queue(floor);
+    t.looseEqual(callstack.get(), [floor]);
+    t.end();
+});
+
+test('pop function should remove first item from stack array', function (t) {
+    var stack = callstack.get();
+    var newFloor = 1;
+    callstack.queue(newFloor);
+    t.looseEqual(callstack.get(), stack.concat(newFloor));
+    callstack.pop();
+    t.looseEqual(callstack.get(), stack.concat(newFloor).slice(1));
     t.end();
 });
 

@@ -13,6 +13,8 @@ function allFunctionArguments(args) {
 
 module.exports = function compose() {
     // Make array-like 'arguments' into an array
+    // This needs Array.prototype, because arguments is not an array
+    // so I guess coersion happens
     var composerArguments = Array.prototype.slice.call(arguments);
     if(!allFunctionArguments) {
         throw 'Not all arguments are functions!';

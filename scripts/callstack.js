@@ -14,8 +14,19 @@ function queue(nextFloor) {
     if(!isNextFloorValid(nextFloor)) {
         throw 'floor needs to be an int between 0 and 5';
     }
+    stack.push(nextFloor);
+}
+
+function get() {
+    return stack.slice();
+}
+
+function pop() {
+    stack.shift();
 }
 
 module.exports = {
-    queue
+    queue,
+    get,
+    pop
 };
