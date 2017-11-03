@@ -1,11 +1,26 @@
-var elevatorWhereToGo = [5, 4, 3, 2, 1, 0];
+const callstack = require('./callstack');
+var reversedFloors = [5, 4, 3, 2, 1, 0];
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+var floorToGo, timeout;
+
+function timeoutFunction(){
+    return window.setTimeout(function(){
+        drawElevator(4);
+        if() {
+            
+        } 
+    }, 1000);
+}
 
 canvas.addEventListener('click', function(e) {
     clearQueuedButton(Math.floor(e.y/100) -1 );
     drawQueuedButton(Math.floor(e.y/100));
     drawOpenDoorsIndicator(Math.floor(e.y/100));
+    callstack.queue(Math.floor(e.y/100));
+    if(!timeout) {
+        timeout = timeoutFunction();
+    }
 });
 
 function handleQueuedButton(floor, fnToExecute) {
@@ -55,6 +70,8 @@ function drawOutlines() {
 function drawElevator(floor) {
     ctx.fillRect(100, floor * 100, 200, 100);
 }
+
+callstack.queue(0);
 
 drawOutlines();
 drawElevator(5);
