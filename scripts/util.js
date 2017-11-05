@@ -21,8 +21,13 @@ module.exports = function compose() {
     }
 
     return function(valueToCheck) {
-        return composerArguments.reduce(function (accumulator, individualFunction) {
-            return accumulator + individualFunction.call(null, valueToCheck);
-        }, 0) === composerArguments.length;
+        return composerArguments.reduce(
+            function (accumulator, individualFunction) {
+                return
+                    accumulator
+                    +
+                    individualFunction.call(null, valueToCheck);
+            },
+        0) === composerArguments.length;
     }
 };

@@ -1,6 +1,6 @@
-const compose = require('./compose');
+const pipe = require('./util');
 const stack = [];
-const isNextFloorValid = compose(isNumber, isBetweenTheRightValues);
+const isNextFloorValid = pipe(isNumber, isBetweenTheRightValues);
 
 function isNumber(int) {
     return typeof int === 'number';
