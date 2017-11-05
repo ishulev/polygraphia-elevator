@@ -11,7 +11,7 @@ function allFunctionArguments(args) {
     })(0);
 }
 
-module.exports = function compose() {
+module.exports = function pipe() {
     // Make array-like 'arguments' into an array
     // This needs Array.prototype, because arguments is not an array
     // so I guess coersion happens
@@ -23,10 +23,9 @@ module.exports = function compose() {
     return function(valueToCheck) {
         return composerArguments.reduce(
             function (accumulator, individualFunction) {
-                return
-                    accumulator
-                    +
-                    individualFunction.call(null, valueToCheck);
+                return accumulator + individualFunction.call(
+                    null, valueToCheck
+                );
             },
         0) === composerArguments.length;
     }
