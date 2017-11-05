@@ -1,6 +1,6 @@
-const pipe = require('./util');
-const stack = [];
-const isNextFloorValid = pipe(isNumber, isBetweenTheRightValues);
+var pipe = require('./util');
+var stack = [];
+var isNextFloorValid = pipe(isNumber, isBetweenTheRightValues);
 
 function isNumber(int) {
     return typeof int === 'number';
