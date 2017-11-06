@@ -1,4 +1,4 @@
-const callstack = require('./callstack');
+const logic = require('./logic');
 var reversedFloors = [5, 4, 3, 2, 1, 0];
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -14,7 +14,7 @@ canvas.addEventListener('click', function(e) {
     clearQueuedButton(Math.floor(e.y/100) -1 );
     drawQueuedButton(Math.floor(e.y/100));
     drawOpenDoorsIndicator(Math.floor(e.y/100));
-    callstack.queue(Math.floor(e.y/100));
+    logic.queue(Math.floor(e.y/100));
     if(!timeout) {
         timeout = timeoutFunction();
     }
@@ -65,10 +65,11 @@ function drawOutlines() {
 }
 
 function drawElevator(floor) {
+    ctx.fillStyle = 'gray';
     ctx.fillRect(100, floor * 100, 200, 100);
 }
 
-callstack.queue(0);
+logic.queue(0);
 
 drawOutlines();
 drawElevator(5);
