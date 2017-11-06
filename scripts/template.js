@@ -3,20 +3,26 @@ var reversedFloors = [5, 4, 3, 2, 1, 0];
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var floorToGo, timeout;
+var currentFloor = 0;
 
-function timeoutFunction(){
+function timeoutFunction(floor){
     return window.setTimeout(function(){
-        drawElevator(4);
+        drawElevator(floor);
+        currentFloor = reversedFloors[floor];
+        if(floor !== floorToGo) {
+            timeoutFunction(reversedFloors[currentFloor] - 1);
+        }
     }, 1000);
 }
 
 canvas.addEventListener('click', function(e) {
-    clearQueuedButton(Math.floor(e.y/100) -1 );
-    drawQueuedButton(Math.floor(e.y/100));
-    drawOpenDoorsIndicator(Math.floor(e.y/100));
-    logic.queue(Math.floor(e.y/100));
+    floorToGo = Math.floor(e.y/100);
+    clearQueuedButton(floorToGo - 1);
+    drawQueuedButton(floorToGo);
+    drawOpenDoorsIndicator(floorToGo);
+    logic.queue(floorToGo);
     if(!timeout) {
-        timeout = timeoutFunction();
+        timeout = timeoutFunction(reversedFloors[currentFloor] - 1);
     }
 });
 
@@ -66,10 +72,10 @@ function drawOutlines() {
 
 function drawElevator(floor) {
     ctx.fillStyle = 'gray';
-    ctx.fillRect(100, floor * 100, 200, 100);
+    ctx.fillRect(110, floor * 100 + 10, 180, 80);
 }
 
 logic.queue(0);
 
 drawOutlines();
-drawElevator(5);
+drawElevator(reversedFloors[currentFloor]);
