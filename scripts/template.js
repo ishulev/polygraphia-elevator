@@ -1,39 +1,45 @@
 const logic = require('./logic');
-var reversedFloors = [5, 4, 3, 2, 1, 0];
+var floorToPixelsFromTop = [500, 400, 300, 200, 100, 0];
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
-var floorToGo, timeout;
+var floorToGo, timeout, direction;
 var currentFloor = 0;
+
+function returnKeyByValue(arr, value) {
+    return arr.indexOf(value);
+}
 
 function timeoutFunction(floor){
     return window.setTimeout(function(){
         drawElevator(floor);
-        currentFloor = reversedFloors[floor];
+        removeElevatorPreviousStep(floor - 1);
+        currentFloor = floor;
         if(floor !== floorToGo) {
-            timeoutFunction(reversedFloors[currentFloor] - 1);
+            timeoutFunction(returnNextFloor());
         }
     }, 1000);
 }
 
 canvas.addEventListener('click', function(e) {
-    floorToGo = Math.floor(e.y/100);
-    clearQueuedButton(floorToGo - 1);
+    floorToGo = returnKeyByValue(floorToPixelsFromTop, Math.floor(e.y/100)*100);
     drawQueuedButton(floorToGo);
     drawOpenDoorsIndicator(floorToGo);
     logic.queue(floorToGo);
-    if(!timeout) {
-        timeout = timeoutFunction(reversedFloors[currentFloor] - 1);
-    }
+    timeout = timeoutFunction(returnNextFloor());
 });
 
+function returnNextFloor() {
+    return currentFloor < floorToGo ? currentFloor + 1 : currentFloor - 1;
+}
+
 function handleQueuedButton(floor, fnToExecute) {
-    fnToExecute.call(ctx, 25, floor * 100 + 25, 50, 50);
+    fnToExecute.call(ctx, 25, floorToPixelsFromTop[floor] + 25, 50, 50);
 }
 
 function handleOpenDoorsIndicator(floor, fnToExecute, fillColor) {
     ctx.fillStyle = fillColor;
     ctx.beginPath();
-    fnToExecute.call(ctx, 350, floor * 100 + 50, 25, 0, 2 * Math.PI, false);
+    fnToExecute.call(ctx, 350, floorToPixelsFromTop[floor] + 50, 25, 0, 2 * Math.PI, false);
     ctx.fill();
 }
 
@@ -72,10 +78,15 @@ function drawOutlines() {
 
 function drawElevator(floor) {
     ctx.fillStyle = 'gray';
-    ctx.fillRect(110, floor * 100 + 10, 180, 80);
+    ctx.fillRect(110, floorToPixelsFromTop[floor] + 10, 180, 80);
+}
+
+function removeElevatorPreviousStep(floor) {
+    ctx.fillStyle = 'gray';
+    ctx.clearRect(110, floorToPixelsFromTop[floor] + 10, 180, 80);
 }
 
 logic.queue(0);
 
 drawOutlines();
-drawElevator(reversedFloors[currentFloor]);
+drawElevator(currentFloor);
