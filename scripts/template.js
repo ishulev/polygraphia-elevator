@@ -5,6 +5,14 @@ var ctx = canvas.getContext('2d');
 var floorToGo, timeout, direction;
 var currentFloor = 0;
 
+canvas.addEventListener('click', function(e) {
+    floorToGo = returnKeyByValue(floorToPixelsFromTop, Math.floor(e.y/100)*100);
+    drawQueuedButton(floorToGo);
+    drawOpenDoorsIndicator(floorToGo);
+    logic.queue(floorToGo);
+    timeout = timeoutFunction(returnNextFloor());
+});
+
 function returnKeyByValue(arr, value) {
     return arr.indexOf(value);
 }
@@ -17,16 +25,29 @@ function timeoutFunction(floor){
         if(floor !== floorToGo) {
             timeoutFunction(returnNextFloor());
         }
+        else {
+            window.setTimeout(drawOpenDoors(0), 1000);
+        }
     }, 1000);
 }
 
-canvas.addEventListener('click', function(e) {
-    floorToGo = returnKeyByValue(floorToPixelsFromTop, Math.floor(e.y/100)*100);
-    drawQueuedButton(floorToGo);
-    drawOpenDoorsIndicator(floorToGo);
-    logic.queue(floorToGo);
-    timeout = timeoutFunction(returnNextFloor());
-});
+function drawOpenDoors(start) {
+    function draw(timer) {
+        ctx.save();
+        var coordinates = [110, floorToPixelsFromTop[currentFloor] + 10, 180, 80];
+        if (start === 0) {
+            start = timer;
+            ctx.clearRect(200, floorToPixelsFromTop[currentFloor] + 20, (timer - start), 60);
+            window.requestAnimationFrame(draw);
+        }
+        else if((timer - start) < 800){
+            ctx.clearRect(200 - (timer - start) / 10.25, floorToPixelsFromTop[currentFloor] + 20, (timer - start) / 5.125, 60);
+            window.requestAnimationFrame(draw);
+        }
+        ctx.restore();
+    }
+    window.requestAnimationFrame(draw);
+}
 
 function returnNextFloor() {
     return currentFloor < floorToGo ? currentFloor + 1 : currentFloor - 1;
@@ -36,15 +57,15 @@ function handleQueuedButton(floor, fnToExecute) {
     fnToExecute.call(ctx, 25, floorToPixelsFromTop[floor] + 25, 50, 50);
 }
 
-function handleOpenDoorsIndicator(floor, fnToExecute, fillColor) {
-    ctx.fillStyle = fillColor;
+function handleOpenDoorsIndicator(floor, fnToExecute) {
     ctx.beginPath();
     fnToExecute.call(ctx, 350, floorToPixelsFromTop[floor] + 50, 25, 0, 2 * Math.PI, false);
     ctx.fill();
 }
 
 function drawOpenDoorsIndicator(floor) {
-    handleOpenDoorsIndicator(floor, ctx.arc, '#a73e12');
+    ctx.fillStyle = '#a73e12';
+    handleOpenDoorsIndicator(floor, ctx.arc);
 }
 
 function drawQueuedButton(floor) {
