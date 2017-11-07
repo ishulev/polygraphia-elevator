@@ -1,4 +1,4 @@
-const logic = require('./logic');
+var logic = require('./logic');
 var floorToPixelsFromTop = [500, 400, 300, 200, 100, 0];
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -12,7 +12,7 @@ function returnKeyByValue(arr, value) {
 function timeoutFunction(floor){
     return window.setTimeout(function(){
         drawElevator(floor);
-        removeElevatorPreviousStep(floor - 1);
+        removeElevatorPreviousStep(currentFloor);
         currentFloor = floor;
         if(floor !== floorToGo) {
             timeoutFunction(returnNextFloor());
