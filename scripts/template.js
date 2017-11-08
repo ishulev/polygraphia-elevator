@@ -8,7 +8,7 @@ var currentFloor = 0;
 canvas.addEventListener('click', function(e) {
     floorToGo = returnKeyByValue(floorToPixelsFromTop, Math.floor(e.y/100)*100);
     drawQueuedButton(floorToGo);
-    drawOpenDoorsIndicator(floorToGo);
+    drawStickman(floorToGo);
     logic.queue(floorToGo);
     timeout = timeoutFunction(returnNextFloor());
 });
@@ -57,17 +57,6 @@ function handleQueuedButton(floor, fnToExecute) {
     fnToExecute.call(ctx, 25, floorToPixelsFromTop[floor] + 25, 50, 50);
 }
 
-function handleOpenDoorsIndicator(floor, fnToExecute) {
-    ctx.beginPath();
-    fnToExecute.call(ctx, 350, floorToPixelsFromTop[floor] + 50, 25, 0, 2 * Math.PI, false);
-    ctx.fill();
-}
-
-function drawOpenDoorsIndicator(floor) {
-    ctx.fillStyle = '#a73e12';
-    handleOpenDoorsIndicator(floor, ctx.arc);
-}
-
 function drawQueuedButton(floor) {
     ctx.fillStyle = '#a73e12';
     handleQueuedButton(floor, ctx.fillRect);
@@ -75,6 +64,28 @@ function drawQueuedButton(floor) {
 
 function clearQueuedButton(floor) {
     handleQueuedButton(floor, ctx.clearRect);
+}
+
+function drawStickman(floor) {
+    ctx.beginPath();
+    // lower torso point
+    ctx.moveTo(350, floorToPixelsFromTop[floor] + 50);
+    ctx.lineTo(330, floorToPixelsFromTop[floor] + 80);
+    ctx.moveTo(350, floorToPixelsFromTop[floor] + 50);
+    ctx.lineTo(370, floorToPixelsFromTop[floor] + 80);
+    ctx.moveTo(350, floorToPixelsFromTop[floor] + 50);
+    // special part
+    // ctx.lineTo(352, floorToPixelsFromTop[floor] + 65);
+    ctx.moveTo(350, floorToPixelsFromTop[floor] + 50);
+    // upper torso point
+    ctx.lineTo(350, floorToPixelsFromTop[floor] + 30);
+    ctx.lineTo(330, floorToPixelsFromTop[floor] + 50);
+    ctx.moveTo(350, floorToPixelsFromTop[floor] + 30);
+    ctx.lineTo(370, floorToPixelsFromTop[floor] + 50);
+    ctx.moveTo(350, floorToPixelsFromTop[floor] + 30);
+    // draw the head
+    ctx.arc(350, floorToPixelsFromTop[floor] + 15, 9, 1.6, 2 * Math.PI + 1.6, false);
+    ctx.stroke();
 }
 
 function drawOutlines() {
